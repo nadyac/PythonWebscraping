@@ -10,7 +10,6 @@ soup = BeautifulSoup(bsObj, 'html.parser')
 # to get results from multiple classes:
 #results = soup.find_all('a', {'class' : ['i','hdrlnk']})
 results = soup.find_all('a',{'class' : 'i'})
-length = len(results)
 
 for n in results:
 	lnk = 'http://newyork.craigslist.org' + n['href']
