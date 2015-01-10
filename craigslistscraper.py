@@ -1,5 +1,5 @@
 # webscraper.py - rough web scraper that pulls posting titles from a given 
-# craigslist ad page. 
+# craigslist ad page. NOTE: needs BeautifulSoup4 and requests to be installed
 import requests
 from bs4 import BeautifulSoup, SoupStrainer
 import bs4
@@ -18,7 +18,7 @@ for n in results:
 	lnkNumber = lnkNumber + 1
 	bsObj2 = requests.get(lnk).text
 	soup2 = BeautifulSoup(bsObj2, 'html.parser')
-	results2 = soup2.find_all('h2', {'class' : 'postingtitle'}) #returning empty list 
+	results2 = soup2.find_all('h2', {'class' : 'postingtitle'})
 	title = results2[0].text
 
 	# print apartment prices for the listings on current page
