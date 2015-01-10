@@ -10,10 +10,12 @@ soup = BeautifulSoup(bsObj, 'html.parser')
 # to get results from multiple classes:
 # results = soup.find_all('a', {'class' : ['i','hdrlnk']})
 results = soup.find_all('a',{'class' : 'i'})
+lnkNumber = 0
 
 
 for n in results:
 	lnk = 'http://newyork.craigslist.org' + n['href']
+	lnkNumber = lnkNumber + 1
 	bsObj2 = requests.get(lnk).text
 	soup2 = BeautifulSoup(bsObj2, 'html.parser')
 	results2 = soup2.find_all('h2', {'class' : 'postingtitle'}) #returning empty list 
@@ -23,7 +25,7 @@ for n in results:
 	words = title.split()
 	for w in words:
 		if w.find('$') != -1:
-			print w
+			print str(lnkNumber) + " - " + w
 
 
 
