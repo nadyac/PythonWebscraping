@@ -1,5 +1,5 @@
 # PythonWebscraping
-The programs in this directory are small webscraping projects and excercise done in python. 
+The programs in this directory are small webscraping projects and excercises done in python. 
 Below you will find a description for each one.
 
 |Project | Description
