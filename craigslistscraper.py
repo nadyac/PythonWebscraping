@@ -1,4 +1,4 @@
-# wrough webscraper that displays apartment prices in NYC by visiting several listing pages
+# rough webscraper that displays apartment prices in NYC by visiting several listing pages
 # sequentially through the next button. 
 import requests
 from bs4 import BeautifulSoup, SoupStrainer
