@@ -4,5 +4,5 @@ Below you will find a description for each one.
 
 |Project | Description
 --------- |-------------
-|craigslistwebscraper.py |Very rough webscraper that prints out the prices for the 300 most current NYC apartment listings on Craigslist. <br><b>Libraries used</b>: BeautifulSoup4, requests
+|craigslistscraper.py |Very rough webscraper that prints out the prices for the 300 most current NYC apartment listings on Craigslist. <br><b>Libraries used</b>: [BeautifulSoup4](https://pypi.python.org/pypi/beautifulsoup4/4.3.2), [requests](http://docs.python-requests.org/en/latest/user/install/)
 
