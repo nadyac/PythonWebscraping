@@ -1,8 +1,6 @@
 # Statricks project is a project sponsored by Statricks, an e-Commerce analytics company.
-# The task is to build a web scraper using Beautiful Soup library to extract listing info from boattrader.com,
-# a website for selling boats, and performe data collection. 
-# The listing info we want to extract includes each Boat's Make/Model, seller contact #, and the price.
-
+# The task is to build a web scraper using Beautiful Soup library to extract listing info
+# and perfome data collection. The listing info includes Boat Maker/Model, seller contact #, and price
 import requests
 import csv
 from bs4 import BeautifulSoup, SoupStrainer
@@ -11,31 +9,56 @@ import bs4
 # Get all the boat makers/models for 800 boats listed on the site (no filters)
 searchResults = requests.get('http://www.boattrader.com/search-results/').text
 soup = BeautifulSoup(searchResults, 'html.parser')
-
-# Get the links to each individual ad listings
-listing = soup.find_all('div', {'class' : 'ad-title'})
-for n in listing:
-	listingLnk = n.find('a')
-
-	#visit each ad listing to extract make/model
-	singleAd = requests.get('http://www.boattrader.com/' + listingLnk['href']).text
-	adSoup = BeautifulSoup(singleAd,'html.parser')
-	table = adSoup.find('div', {'class' : 'collapsible'})
-	tableItem = table.find_all('td')
-	make_model = tableItem[3].text # the make and model of the boat
-
-	# Extract the seller contact #
-	seller = adSoup.find('div', {'class' : 'phone'})
-	sellerNumber = seller.text # the seller's number
-
-	# Extract the Price of the boat
-	btPrice = adSoup.find('span', {'class' : 'bd-price'})
-	price = btPrice.text # the price of the boat
+number_of_listings = 0;
 
 # Create output file
 with open("output.csv", "wb") as csvfile:
 	fileObj = csv.writer(csvfile, delimiter =',')
-	fileObj.writerow(['Make/Model', 'Seller Contact #', 'Boat Price'])
+	
+	while number_of_listings < 800:
+		# Get the links to each individual ad listings on current page
+		listings = soup.find_all('div', {'class' : 'ad-title'})
+
+		for n in listings:
+			listingLnk = n.find('a')
+			number_of_listings = number_of_listings + 1
+
+			#visit each ad listing to extract make/model
+			singleAd = requests.get('http://www.boattrader.com/' + listingLnk['href']).text
+			adSoup = BeautifulSoup(singleAd,'html.parser')
+			table = adSoup.find('div', {'class' : 'collapsible'}) # this is none for item 166, boat on page 6 after the huckins boat
+			if table is not None:
+				tableItem = table.find_all('td')
+				make_model = tableItem[3].text # the make and model of the boat
+			else: 
+				make_model = ""
+
+			# Extract the seller contact #
+			seller = adSoup.find('div', {'class' : 'phone'})
+			if seller is not None:
+				sellerNumber = seller.text # the seller's number
+			else:
+				sellerNumber = ""
+
+			# Extract the Price of the boat
+			btPrice = adSoup.find('span', {'class' : 'bd-price'})
+			if btPrice is not None:
+				price = btPrice.text.strip() # the price of the boat
+			else:
+				price = ""
+
+			print str(number_of_listings) + " - " + make_model + " " + sellerNumber + " " + price
+
+		# Get listings on the next page
+		nextPage = soup.find('a', {'title' : 'Next Page'})
+
+		if nextPage is not None:
+			searchResults = requests.get('http://www.boattrader.com' + nextPage['href']).text
+			soup = BeautifulSoup(searchResults, 'html.parser')
+		else:
+			break
+
+		fileObj.writerow([make_model, sellerNumber, price])
 
 print "Done."
 
