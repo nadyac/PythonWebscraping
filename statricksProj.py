@@ -14,7 +14,7 @@ number_of_listings = 0;
 # Create output file
 with open("output.csv", "wb") as csvfile:
 	fileObj = csv.writer(csvfile, delimiter =',')
-	
+
 	while number_of_listings < 800:
 		# Get the links to each individual ad listings on current page
 		listings = soup.find_all('div', {'class' : 'ad-title'})
@@ -26,7 +26,9 @@ with open("output.csv", "wb") as csvfile:
 			#visit each ad listing to extract make/model
 			singleAd = requests.get('http://www.boattrader.com/' + listingLnk['href']).text
 			adSoup = BeautifulSoup(singleAd,'html.parser')
-			table = adSoup.find('div', {'class' : 'collapsible'}) # this is none for item 166, boat on page 6 after the huckins boat
+
+			# Extract the make and model
+			table = adSoup.find('div', {'class' : 'collapsible'})
 			if table is not None:
 				tableItem = table.find_all('td')
 				make_model = tableItem[3].text # the make and model of the boat
@@ -47,7 +49,8 @@ with open("output.csv", "wb") as csvfile:
 			else:
 				price = ""
 
-			print str(number_of_listings) + " - " + make_model + " " + sellerNumber + " " + price
+			#print str(number_of_listings) + " - " + make_model + " " + sellerNumber + " " + price
+			fileObj.writerow([make_model, sellerNumber, price])
 
 		# Get listings on the next page
 		nextPage = soup.find('a', {'title' : 'Next Page'})
@@ -57,8 +60,6 @@ with open("output.csv", "wb") as csvfile:
 			soup = BeautifulSoup(searchResults, 'html.parser')
 		else:
 			break
-
-		fileObj.writerow([make_model, sellerNumber, price])
 
 print "Done."
 
