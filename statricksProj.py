@@ -1,6 +1,8 @@
 # Statricks project is a project sponsored by Statricks, an e-Commerce analytics company.
-# The task is to build a web scraper using Beautiful Soup library to extract listing info
-# and perfome data collection. The listing info includes Boat Maker/Model, seller contact #, and price
+# The task is to build a web scraper using Beautiful Soup library to extract listing info from boattrader.com,
+# a website for selling boats, and performe data collection. 
+# The listing info we want to extract includes each Boat's Make/Model, seller contact #, and the price.
+
 import requests
 import csv
 from bs4 import BeautifulSoup, SoupStrainer
