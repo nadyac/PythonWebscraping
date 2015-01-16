@@ -6,6 +6,34 @@ import csv
 from bs4 import BeautifulSoup, SoupStrainer
 import bs4
 
+# Extract the make and model
+def getMakeModel(soup):
+	table = soup.find('div', {'class' : 'collapsible'})
+	if table is not None:
+		tableItem = table.find_all('td')
+		make_model = tableItem[3].text # the make and model of the boat
+	else: 
+		make_model = ""
+	return make_model
+
+# Extract the seller contact #
+def getSellerNumber(soup):
+	seller = soup.find('div', {'class' : 'phone'})
+	if seller is not None:
+		sellerNumber = seller.text # the seller's number
+	else:
+		sellerNumber = ""
+	return sellerNumber
+
+# Extract the Price of the boat
+def getPrice(soup):
+	btPrice = soup.find('span', {'class' : 'bd-price'})
+	if btPrice is not None:
+		price = btPrice.text.strip() # the price of the boat
+	else:
+		price = ""
+	return price
+
 # Get all the boat makers/models for 800 boats listed on the site (no filters)
 searchResults = requests.get('http://www.boattrader.com/search-results/').text
 soup = BeautifulSoup(searchResults, 'html.parser')
@@ -28,28 +56,15 @@ with open("output.csv", "wb") as csvfile:
 			adSoup = BeautifulSoup(singleAd,'html.parser')
 
 			# Extract the make and model
-			table = adSoup.find('div', {'class' : 'collapsible'})
-			if table is not None:
-				tableItem = table.find_all('td')
-				make_model = tableItem[3].text # the make and model of the boat
-			else: 
-				make_model = ""
+			make_model = getMakeModel(adSoup)
 
 			# Extract the seller contact #
-			seller = adSoup.find('div', {'class' : 'phone'})
-			if seller is not None:
-				sellerNumber = seller.text # the seller's number
-			else:
-				sellerNumber = ""
+			sellerNumber = getSellerNumber(adSoup)
 
 			# Extract the Price of the boat
-			btPrice = adSoup.find('span', {'class' : 'bd-price'})
-			if btPrice is not None:
-				price = btPrice.text.strip() # the price of the boat
-			else:
-				price = ""
+			price = getPrice(adSoup)
 
-			#print str(number_of_listings) + " - " + make_model + " " + sellerNumber + " " + price
+			print str(number_of_listings) + " - " + make_model + " " + sellerNumber + " " + price
 			fileObj.writerow([make_model, sellerNumber, price])
 
 		# Get listings on the next page
