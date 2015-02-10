@@ -13,6 +13,13 @@ def getPostingTitle(soup):
 		title = ""
 	return title
 
+def getPrices(title):
+	# print apartment prices for the listings on current page
+	words = title.split()
+	for w in words:
+		if w.find('$') != -1:
+			print str(lnkNumber) + " - " + w
+
 bsObj = requests.get('http://newyork.craigslist.org/search/hhh?query=apartment&sort=rel').text
 soup = BeautifulSoup(bsObj, 'html.parser')
 results = soup.find_all('a',{'class' : 'i'}) #grab links in a results page
@@ -30,11 +37,8 @@ while lnkNumber < 300:
 		soup2 = BeautifulSoup(bsObj2, 'html.parser')
 		title = getPostingTitle(soup2)
 
-		# print apartment prices for the listings on current page
-		words = title.split()
-		for w in words:
-			if w.find('$') != -1:
-				print str(lnkNumber) + " - " + w
+		#get apartment prices
+		getPrices(title)
 
 	#process the listings in the next page
 	if nextBtn is not None:
