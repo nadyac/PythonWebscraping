@@ -22,8 +22,8 @@ def getPrices(title):
 			print str(lnkNumber) + " - " + w
 
 try:
-	bsObj = requests.get('http://newyork.craigslist.org/search/hhh?query=apartment&sort=rel').text
-	soup = BeautifulSoup(bsObj, 'html.parser')
+	request_object = requests.get('http://newyork.craigslist.org/search/hhh?query=apartment&sort=rel').text
+	soup = BeautifulSoup(request_object, 'html.parser')
 	results = soup.find_all('a',{'class' : 'i'}) #grab links in a results page
 	nextBtn = soup.find('a', {'class' : 'button next'})
 	lnkNumber = 0
@@ -35,8 +35,8 @@ try:
 			#visit each individual link in a listings page
 			lnk = 'http://newyork.craigslist.org' + n['href']
 			lnkNumber = lnkNumber + 1
-			bsObj2 = requests.get(lnk).text
-			soup2 = BeautifulSoup(bsObj2, 'html.parser')
+			single_ad = requests.get(lnk).text
+			soup2 = BeautifulSoup(single_ad, 'html.parser')
 			title = getPostingTitle(soup2)
 
 			#get apartment prices
@@ -45,8 +45,8 @@ try:
 		#process the listings in the next page
 		if nextBtn is not None:
 			btnNext = nextBtn['href']
-			bsObj = requests.get('http://newyork.craigslist.org' + str(btnNext)).text
-			soup = BeautifulSoup(bsObj, 'html.parser')
+			request_object = requests.get('http://newyork.craigslist.org' + str(btnNext)).text
+			soup = BeautifulSoup(request_object, 'html.parser')
 			results = soup.find_all('a', {'class' : 'i'})
 		else :
 			break
@@ -55,7 +55,9 @@ try:
 		nextBtn = soup.find('a', {'class' : 'button next'})
 except requests.exceptions.RequestException as e:
 	print "There was an error with the connection. Please try again."
+	single_ad.raise_for_status()
 	print e
+
 
 
 
