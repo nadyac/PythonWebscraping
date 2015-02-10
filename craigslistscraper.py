@@ -4,9 +4,18 @@ import requests
 from bs4 import BeautifulSoup, SoupStrainer
 import bs4
 
+#Get the posting title
+def getPostingTitle(soup):
+	posting_title = soup.find_all('h2', {'class' : 'postingtitle'})
+	if posting_title is not None:
+		title = posting_title[0].text
+	else:
+		title = ""
+	return title
+
 bsObj = requests.get('http://newyork.craigslist.org/search/hhh?query=apartment&sort=rel').text
 soup = BeautifulSoup(bsObj, 'html.parser')
-results = soup.find_all('a',{'class' : 'i'})
+results = soup.find_all('a',{'class' : 'i'}) #grab links in a results page
 nextBtn = soup.find('a', {'class' : 'button next'})
 lnkNumber = 0
 
@@ -14,12 +23,12 @@ lnkNumber = 0
 while lnkNumber < 300:
 
 	for n in results:
+		#visit each individual link in a listings page
 		lnk = 'http://newyork.craigslist.org' + n['href']
 		lnkNumber = lnkNumber + 1
 		bsObj2 = requests.get(lnk).text
 		soup2 = BeautifulSoup(bsObj2, 'html.parser')
-		results2 = soup2.find_all('h2', {'class' : 'postingtitle'})
-		title = results2[0].text
+		title = getPostingTitle(soup2)
 
 		# print apartment prices for the listings on current page
 		words = title.split()
